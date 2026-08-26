@@ -43,6 +43,16 @@ def test_basic_text_fix_and_exact_turn_serialization() -> None:
     )
 
 
+def test_health_reports_model_availability() -> None:
+    response = TestClient(index.app).get("/api/health")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "status": "ok",
+        "model_present": index.MODEL_PATH.is_file(),
+    }
+
+
 def test_predict_maps_probabilities_using_model_classes(monkeypatch: pytest.MonkeyPatch) -> None:
     model = OrderedModelStub()
     monkeypatch.setattr(index, "get_model", lambda: model)

@@ -28,14 +28,22 @@ const initialTurns: Turn[] = [
   { id: 1, text: "" }
 ];
 
-function messageFromResponse(body: unknown): string {
-  if (!body || typeof body !== "object") return "Prediction failed. Please try again.";
-
-  const detail = "detail" in body ? body.detail : undefined;
-  if (typeof detail === "string") return detail;
-  if (detail && typeof detail === "object" && "message" in detail) {
-    return String(detail.message);
+function messageFromResponse(body: unknown, status?: number): string {
+  if (body && typeof body === "object") {
+    const detail = "detail" in body ? body.detail : undefined;
+    if (typeof detail === "string") return detail;
+    if (detail && typeof detail === "object" && "message" in detail) {
+      return String(detail.message);
+    }
   }
+
+  if (status === 404) {
+    return "The prediction API is missing from this deployment. Redeploy the project from the repository root.";
+  }
+  if (status && status >= 500) {
+    return "The prediction service could not start. Check the Vercel function logs and redeploy.";
+  }
+
   return "Prediction failed. Please try again.";
 }
 
@@ -93,7 +101,7 @@ export function ConversationClassifier() {
       });
 
       const body: unknown = await response.json().catch(() => null);
-      if (!response.ok) throw new Error(messageFromResponse(body));
+      if (!response.ok) throw new Error(messageFromResponse(body, response.status));
       setResult(body as PredictionResult);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Prediction failed. Please try again.");

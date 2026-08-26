@@ -43,6 +43,14 @@ class PredictResponse(BaseModel):
     probabilities: dict[str, float]
 
 
+@app.get("/api/health")
+def health() -> dict[str, str | bool]:
+    return {
+        "status": "ok",
+        "model_present": MODEL_PATH.is_file(),
+    }
+
+
 def basic_text_fix(text: object) -> str:
     cleaned = str(text).replace("\u00a0", " ").replace("\ufffd", "")
     return re.sub(r"\s+", " ", cleaned).strip()

@@ -129,4 +129,28 @@ describe("ConversationClassifier", () => {
       "Model missing. Place LR_C1.joblib inside the web/model folder."
     );
   });
+
+  it("explains when a deployment is missing the prediction API", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: false,
+        status: 404,
+        json: async () => {
+          throw new Error("The response is an HTML 404 page.");
+        }
+      })
+    );
+    const user = userEvent.setup();
+    render(<ConversationClassifier />);
+
+    const textareas = screen.getAllByPlaceholderText("Type conversation...");
+    await user.type(textareas[0], "Hello");
+    await user.type(textareas[1], "Hi");
+    await user.click(screen.getByRole("button", { name: "Analyze Conversation" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "The prediction API is missing from this deployment."
+    );
+  });
 });
