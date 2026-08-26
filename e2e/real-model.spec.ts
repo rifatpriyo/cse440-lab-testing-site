@@ -1,10 +1,5 @@
 import { expect, test } from "@playwright/test";
 
-test.skip(
-  process.env.REAL_MODEL_TEST !== "1",
-  "Set REAL_MODEL_TEST=1 while the local FastAPI server and LR_C1.joblib are available."
-);
-
 test("shows a genuine LR_C1 prediction", async ({ page }, testInfo) => {
   await page.goto("/", { waitUntil: "networkidle" });
   await expect(page.locator("main[data-hydrated='true']")).toHaveCount(1);

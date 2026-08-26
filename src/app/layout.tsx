@@ -5,7 +5,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Psychological Manipulation Conversation Classifier",
-  description: "A CSE440 Logistic Regression conversation-classification demonstration"
+  description: "A CSE440 best-trained-model conversation-classification demonstration"
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {

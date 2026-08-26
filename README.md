@@ -5,33 +5,26 @@ A simple CSE440 project website that classifies a two-person conversation using 
 ## Technology
 
 - Next.js, TypeScript, and Tailwind CSS
-- FastAPI serverless endpoint at `api/index.py`
-- Fitted Logistic Regression and TF-IDF pipeline at `model/LR_C1.joblib`
+- Next.js prediction endpoint at `src/app/api/predict/route.ts`
+- Fitted `LR_C1` TF-IDF parameters exported from `model/LR_C1.joblib`
 
 The application does not retrain the model, create accounts, use a database, or save conversations.
 
 ## Run locally
 
-Install Node.js 20.9 or newer and Python 3.12, then run:
+Install Node.js 20.9 or newer, then run:
 
 ```powershell
 npm install
-python -m pip install -r requirements-dev.txt
-npm install --global vercel
-vercel dev
+npm run dev
 ```
 
 Open `http://localhost:3000`.
 
-Without the Vercel CLI, use two terminals:
+Python is only needed if `LR_C1.joblib` changes. Re-export its fitted parameters with:
 
 ```powershell
-# Terminal 1
-npm run dev:api
-
-# Terminal 2
-$env:LOCAL_API_URL="http://127.0.0.1:8000"
-npm run dev
+python scripts/export_lr_c1.py
 ```
 
 ## Prediction flow
@@ -42,7 +35,7 @@ The website sends the ordered Person A and Person B turns to `POST /api/predict`
 [SPEAKER_A] Hello [TURN] [SPEAKER_B] Hi
 ```
 
-It loads the fitted model, calls `predict()` and `predict_proba()`, and uses `model.classes_` to return the prediction and all seven probabilities.
+The endpoint applies the fitted model's exported vocabulary, IDF values, coefficients, and intercepts to return the prediction and all seven probabilities. It does not retrain the model.
 
 ## Deploy on Vercel
 
@@ -51,6 +44,6 @@ It loads the fitted model, calls `predict()` and `predict_proba()`, and uses `mo
 3. Accept the detected Next.js settings.
 4. Deploy.
 
-The Next.js site, Python API, and model are all included in this one repository.
+The site and its prediction endpoint deploy together as one Next.js project; no separate backend or environment variables are required.
 
 > This classifier is an academic machine-learning project trained on synthetic conversation data. Predictions are not professional psychological assessments.

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:api": "python -m uvicorn api.index:app --reload --port 8000",
+    "export:model": "python scripts/export_lr_c1.py",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",

@@ -7,7 +7,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: "html",
   use: {
-    baseURL: "http://127.0.0.1:3000",
+    baseURL: "http://127.0.0.1:3101",
     trace: "on-first-retry"
   },
   projects: [
@@ -15,9 +15,9 @@ export default defineConfig({
     { name: "mobile-chromium", use: { ...devices["Pixel 7"] } }
   ],
   webServer: {
-    command: "npx next dev -H 127.0.0.1",
-    url: "http://127.0.0.1:3000",
-    reuseExistingServer: !process.env.CI,
+    command: "npx next dev -H 127.0.0.1 -p 3101",
+    url: "http://127.0.0.1:3101",
+    reuseExistingServer: false,
     timeout: 120000
   }
 });
