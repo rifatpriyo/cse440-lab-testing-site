@@ -25,7 +25,8 @@ type PredictionResult = {
 
 const initialTurns: Turn[] = [
   { id: 0, text: "" },
-  { id: 1, text: "" }
+  { id: 1, text: "" },
+  { id: 2, text: "" }
 ];
 
 function messageFromResponse(body: unknown, status?: number): string {
@@ -53,7 +54,7 @@ export function ConversationClassifier() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const mainRef = useRef<HTMLElement>(null);
-  const nextId = useRef(2);
+  const nextId = useRef(3);
 
   useEffect(() => {
     mainRef.current?.setAttribute("data-hydrated", "true");

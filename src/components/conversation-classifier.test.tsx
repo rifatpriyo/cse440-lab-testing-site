@@ -24,18 +24,19 @@ afterEach(() => {
 });
 
 describe("ConversationClassifier", () => {
-  it("starts with Person A and Person B, then adds and removes an alternating turn", async () => {
+  it("starts with three alternating turns, then adds and removes another turn", async () => {
     const user = userEvent.setup();
     render(<ConversationClassifier />);
 
-    expect(screen.getByLabelText("Person A")).toBeInTheDocument();
+    expect(screen.getAllByLabelText("Person A")).toHaveLength(2);
     expect(screen.getByLabelText("Person B")).toBeInTheDocument();
+    expect(screen.getAllByPlaceholderText("Type conversation...")).toHaveLength(3);
 
     await user.click(screen.getByRole("button", { name: "+ Add Turn" }));
-    expect(screen.getAllByLabelText("Person A")).toHaveLength(2);
+    expect(screen.getAllByLabelText("Person B")).toHaveLength(2);
 
-    await user.click(screen.getByRole("button", { name: "Remove turn 3" }));
-    expect(screen.getAllByPlaceholderText("Type conversation...")).toHaveLength(2);
+    await user.click(screen.getByRole("button", { name: "Remove turn 4" }));
+    expect(screen.getAllByPlaceholderText("Type conversation...")).toHaveLength(3);
   });
 
   it("shows a simple validation message for an empty conversation", async () => {
@@ -61,8 +62,7 @@ describe("ConversationClassifier", () => {
     const textareas = screen.getAllByPlaceholderText("Type conversation...");
     await user.type(textareas[0], "Remember when I helped you?");
     await user.type(textareas[1], "Yes.");
-    await user.click(screen.getByRole("button", { name: "+ Add Turn" }));
-    await user.type(screen.getAllByPlaceholderText("Type conversation...")[2], "Then help me now.");
+    await user.type(textareas[2], "Then help me now.");
     await user.click(screen.getByRole("button", { name: "Analyze Conversation" }));
 
     expect(await screen.findByRole("heading", { name: "Guilt Tripping" })).toBeInTheDocument();
@@ -94,6 +94,7 @@ describe("ConversationClassifier", () => {
     const textareas = screen.getAllByPlaceholderText("Type conversation...");
     await user.type(textareas[0], "Hello");
     await user.type(textareas[1], "Hi");
+    await user.type(textareas[2], "How are you?");
     await user.click(screen.getByRole("button", { name: "Analyze Conversation" }));
 
     expect(screen.getByRole("button", { name: "Analyzing..." })).toBeDisabled();
@@ -123,6 +124,7 @@ describe("ConversationClassifier", () => {
     const textareas = screen.getAllByPlaceholderText("Type conversation...");
     await user.type(textareas[0], "Hello");
     await user.type(textareas[1], "Hi");
+    await user.type(textareas[2], "How are you?");
     await user.click(screen.getByRole("button", { name: "Analyze Conversation" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent(
@@ -147,6 +149,7 @@ describe("ConversationClassifier", () => {
     const textareas = screen.getAllByPlaceholderText("Type conversation...");
     await user.type(textareas[0], "Hello");
     await user.type(textareas[1], "Hi");
+    await user.type(textareas[2], "How are you?");
     await user.click(screen.getByRole("button", { name: "Analyze Conversation" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent(

@@ -4,12 +4,13 @@ test("shows a genuine LR_C1 prediction", async ({ page }, testInfo) => {
   await page.goto("/", { waitUntil: "networkidle" });
   await expect(page.locator("main[data-hydrated='true']")).toHaveCount(1);
 
-  await page.getByLabel("Person A").fill("Remember when I helped you?");
-  await page.getByLabel("Person B").fill("Then you should do this for me.");
+  await page.locator("#turn-0").fill("Remember when I helped you?");
+  await page.locator("#turn-1").fill("Yes.");
+  await page.locator("#turn-2").fill("Then you should do this for me.");
   await page.getByRole("button", { name: "Analyze Conversation" }).click();
 
   await expect(page.getByRole("heading", { name: "Guilt Tripping" })).toBeVisible();
-  await expect(page.getByText("29.8%")).toHaveCount(2);
+  await expect(page.getByText("29.3%")).toHaveCount(2);
   await page.getByText("View Details").click();
   await expect(page.getByRole("progressbar")).toHaveCount(7);
 

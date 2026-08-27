@@ -21,15 +21,17 @@ test("builds a conversation and displays the API result", async ({ page }, testI
   await page.goto("/", { waitUntil: "networkidle" });
   await expect(page.locator("main[data-hydrated='true']")).toHaveCount(1);
 
-  await expect(page.getByLabel("Person A")).toBeVisible();
+  await expect(page.getByLabel("Person A")).toHaveCount(2);
   await expect(page.getByLabel("Person B")).toBeVisible();
-  await page.getByLabel("Person A").fill("Remember when I helped you?");
-  await page.getByLabel("Person B").fill("Yes.");
+  await expect(page.getByPlaceholder("Type conversation...")).toHaveCount(3);
+  await page.locator("#turn-0").fill("Remember when I helped you?");
+  await page.locator("#turn-1").fill("Yes.");
+  await page.locator("#turn-2").fill("Then help me now.");
 
   await page.getByRole("button", { name: "+ Add Turn" }).click();
-  await expect(page.getByLabel("Person A")).toHaveCount(2);
-  await page.getByRole("button", { name: "Remove turn 3" }).click();
-  await expect(page.getByPlaceholder("Type conversation...")).toHaveCount(2);
+  await expect(page.getByLabel("Person B")).toHaveCount(2);
+  await page.getByRole("button", { name: "Remove turn 4" }).click();
+  await expect(page.getByPlaceholder("Type conversation...")).toHaveCount(3);
 
   await page.getByRole("button", { name: "Analyze Conversation" }).click();
   await expect(page.getByRole("heading", { name: "Guilt Tripping" })).toBeVisible();
