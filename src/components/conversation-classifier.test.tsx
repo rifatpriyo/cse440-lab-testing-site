@@ -24,6 +24,30 @@ afterEach(() => {
 });
 
 describe("ConversationClassifier", () => {
+  it("shows and hides training-based input guidance from the information button", async () => {
+    const user = userEvent.setup();
+    render(<ConversationClassifier />);
+
+    const guideButton = screen.getByRole("button", {
+      name: "How to get the best prediction"
+    });
+    expect(guideButton).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByText("Best match to the training data")).not.toBeInTheDocument();
+
+    await user.click(guideButton);
+
+    expect(guideButton).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByText("Best match to the training data")).toBeInTheDocument();
+    expect(screen.getByText(/3–8 turns and roughly 10–90 words/)).toBeInTheDocument();
+    expect(screen.getByText("Example format")).toBeInTheDocument();
+    expect(screen.getByText(/does not guarantee a correct result/)).toBeInTheDocument();
+
+    await user.click(guideButton);
+
+    expect(guideButton).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByText("Best match to the training data")).not.toBeInTheDocument();
+  });
+
   it("starts with three alternating turns, then adds and removes another turn", async () => {
     const user = userEvent.setup();
     render(<ConversationClassifier />);

@@ -53,6 +53,7 @@ export function ConversationClassifier() {
   const [result, setResult] = useState<PredictionResult | null>(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showInputGuide, setShowInputGuide] = useState(false);
   const mainRef = useRef<HTMLElement>(null);
   const nextId = useRef(3);
 
@@ -140,12 +141,61 @@ export function ConversationClassifier() {
           className="rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.08)] sm:p-8"
         >
           <div className="mb-6">
-            <h2 id="conversation-heading" className="text-xl font-semibold text-slate-900">
-              Conversation
-            </h2>
+            <div className="flex items-center gap-2">
+              <h2 id="conversation-heading" className="text-xl font-semibold text-slate-900">
+                Conversation
+              </h2>
+              <button
+                type="button"
+                aria-label="How to get the best prediction"
+                aria-expanded={showInputGuide}
+                aria-controls="input-guide"
+                onClick={() => setShowInputGuide((current) => !current)}
+                className="flex h-7 w-7 items-center justify-center rounded-full border border-indigo-200 bg-indigo-50 text-sm font-bold text-indigo-700 transition hover:border-indigo-300 hover:bg-indigo-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                title="How to format your conversation"
+              >
+                <span aria-hidden="true">i</span>
+              </button>
+            </div>
             <p className="mt-1 text-sm text-slate-500">
               Speakers alternate automatically as you add turns.
             </p>
+
+            {showInputGuide && (
+              <aside
+                id="input-guide"
+                aria-labelledby="input-guide-heading"
+                className="mt-4 rounded-2xl border border-indigo-200 bg-indigo-50/70 p-4 text-sm text-slate-700"
+              >
+                <h3 id="input-guide-heading" className="font-semibold text-slate-900">
+                  Best match to the training data
+                </h3>
+                <ul className="mt-2 list-disc space-y-1 pl-5 leading-6">
+                  <li>Use an English conversation between two people.</li>
+                  <li>Aim for 3–8 turns and roughly 10–90 words in total.</li>
+                  <li>Put one natural message in each box and keep the original order.</li>
+                  <li>Include enough context and clear wording instead of single words or summaries.</li>
+                </ul>
+
+                <div className="mt-4 rounded-xl border border-indigo-100 bg-white p-3">
+                  <p className="font-semibold text-slate-900">Example format</p>
+                  <div className="mt-2 space-y-1.5 leading-6">
+                    <p><span className="font-semibold">Person A:</span> I never promised to help you.</p>
+                    <p><span className="font-semibold">Person B:</span> You promised me yesterday.</p>
+                    <p><span className="font-semibold">Person A:</span> That never happened. You are imagining things again.</p>
+                  </div>
+                </div>
+
+                <p className="mt-4 leading-6">
+                  The model chooses among Charm / Flattery, Direct Coercion, Gaslighting,
+                  Guilt Tripping, Love Bombing, Neutral, and Passive Aggressive.
+                </p>
+                <p className="mt-2 text-xs leading-5 text-slate-600">
+                  The training data is synthetic and template-based. Following this format makes
+                  the input more similar to that data, but it does not guarantee a correct result.
+                </p>
+              </aside>
+            )}
           </div>
 
           <div className="space-y-5">

@@ -21,6 +21,14 @@ test("builds a conversation and displays the API result", async ({ page }, testI
   await page.goto("/", { waitUntil: "networkidle" });
   await expect(page.locator("main[data-hydrated='true']")).toHaveCount(1);
 
+  const guideButton = page.getByRole("button", { name: "How to get the best prediction" });
+  await expect(guideButton).toHaveAttribute("aria-expanded", "false");
+  await guideButton.click();
+  await expect(page.getByText("Best match to the training data")).toBeVisible();
+  await expect(page.getByText(/3–8 turns and roughly 10–90 words/)).toBeVisible();
+  await guideButton.click();
+  await expect(page.getByText("Best match to the training data")).toHaveCount(0);
+
   await expect(page.getByLabel("Person A")).toHaveCount(2);
   await expect(page.getByLabel("Person B")).toBeVisible();
   await expect(page.getByPlaceholder("Type conversation...")).toHaveCount(3);
